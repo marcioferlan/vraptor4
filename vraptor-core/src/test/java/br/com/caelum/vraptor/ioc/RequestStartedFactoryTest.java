@@ -20,6 +20,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;

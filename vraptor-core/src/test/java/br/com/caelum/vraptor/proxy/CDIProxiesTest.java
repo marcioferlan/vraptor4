@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -19,18 +20,18 @@ import br.com.caelum.vraptor.WeldJunitRunner;
 @RunWith(WeldJunitRunner.class)
 public class CDIProxiesTest {
 
-	@Inject private AnyProxiableBean proxiable;
+	@Inject private Instance<AnyProxiableBean> proxiable;
 	@Inject private NonProxiableBean nonProxiable;
 	
 	@Test
 	public void shoulIdentifyCDIProxies() {
-		assertTrue(isCDIProxy(proxiable.getClass()));
+		assertTrue(isCDIProxy(proxiable.get().getClass()));
 		assertFalse(isCDIProxy(nonProxiable.getClass()));
 	}
 	
 	@Test
 	public void shouldUnproxifyCDIProxies() {
-		AnyProxiableBean bean = unproxifyIfPossible(proxiable);
+		AnyProxiableBean bean = unproxifyIfPossible(proxiable.get());
 		assertFalse(isCDIProxy(bean.getClass()));
 	}
 
