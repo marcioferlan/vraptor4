@@ -19,6 +19,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -27,7 +29,6 @@ import java.util.NoSuchElementException;
 
 import javax.servlet.ServletContext;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -105,5 +106,24 @@ public class DefaultEnvironmentTest {
 		DefaultEnvironment env = new DefaultEnvironment(context);
 		String value = env.get("env_name", "fallback");
 		assertThat(value, is("development"));
+	}
+
+	@Test
+	public void shouldUseContextInitParameterWhenSystemPropertiesHaveNoEnvironment() {
+		DefaultEnvironment env = new DefaultEnvironment(context);
+		when(context.getInitParameter(DefaultEnvironment.ENVIRONMENT_PROPERTY)).thenReturn("acceptance");
+		
+		assertThat(env.getName(), is("acceptance"));
+	}
+	
+	@Test
+	public void shouldUseSystemPropertiesWhenSysenvHaveNoEnvironment() {
+		DefaultEnvironment env = new DefaultEnvironment(context);
+		System.getProperties().setProperty(DefaultEnvironment.ENVIRONMENT_PROPERTY, "acceptance");
+
+		verify(context, never()).getInitParameter(DefaultEnvironment.ENVIRONMENT_PROPERTY);
+
+		assertThat(env.getName(), is("acceptance"));
+		System.getProperties().remove(DefaultEnvironment.ENVIRONMENT_PROPERTY);
 	}
 }
