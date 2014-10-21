@@ -27,9 +27,7 @@ import java.security.PrivilegedAction;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import javax.enterprise.inject.Vetoed;
 import javax.servlet.ServletContext;
 
 import org.slf4j.Logger;
@@ -45,8 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author Rodrigo Turini
  * @author Otávio Garcia
  */
-@ApplicationScoped
-@Named("environment")
+@Vetoed
 public class DefaultEnvironment implements Environment {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultEnvironment.class);
@@ -64,7 +61,6 @@ public class DefaultEnvironment implements Environment {
 		this((ServletContext) null);
 	}
 
-	@Inject
 	public DefaultEnvironment(ServletContext context) {
 		this.context = context;
 	}
