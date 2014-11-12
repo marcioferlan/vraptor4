@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 @Named("environment")
 public class DefaultEnvironment implements Environment {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultEnvironment.class);
+	private static final Logger logger = LoggerFactory.getLogger(DefaultEnvironment.class);
 	public static final String ENVIRONMENT_PROPERTY = "br.com.caelum.vraptor.environment";
 	public static final String BASE_ENVIRONMENT_FILE = "environment";
 
@@ -81,7 +81,7 @@ public class DefaultEnvironment implements Environment {
 			loadAndPut(BASE_ENVIRONMENT_FILE);
 			loadAndPut(getEnvironmentType().getName());
 
-			LOG.debug("Environment is up with properties {}", properties);
+			logger.debug("Environment is up with properties {}", properties);
 		}
 
 		return properties;
@@ -97,9 +97,9 @@ public class DefaultEnvironment implements Environment {
 	private void loadAndPut(String environment) {
 		try (InputStream resource = getClass().getResourceAsStream("/" + environment + ".properties")) {
 			properties.load(resource);
-			LOG.debug("File {}.properties loaded", environment);
+			logger.debug("File {}.properties loaded", environment);
 		} catch (NullPointerException | IOException whenNotFound) {
-			LOG.warn("Could not find the file " + environment + ".properties to load.", whenNotFound);
+			logger.warn("Could not find the file " + environment + ".properties to load.", whenNotFound);
 		}
 	}
 
@@ -109,23 +109,23 @@ public class DefaultEnvironment implements Environment {
 			public String run() {
 				String name = fromSystemEnv();
 				if (name != null) {
-					LOG.debug("Environment {} loaded by system env", name);
+					logger.debug("Environment {} loaded by system env", name);
 					return name;
 				}
 
 				name = fromSystemProperty();
 				if (name != null) {
-					LOG.debug("Environment {} loaded by system property", name);
+					logger.debug("Environment {} loaded by system property", name);
 					return name;
 				}
 
 				name = fromApplicationContext();
 				if (name != null) {
-					LOG.debug("Environment {} loaded by web.xml", name);
+					logger.debug("Environment {} loaded by web.xml", name);
 					return name;
 				}
 
-				LOG.debug("No enviroment was found, using development as default");
+				logger.debug("No enviroment was found, using development as default");
 				return "development";
 			}
 		});
@@ -212,7 +212,7 @@ public class DefaultEnvironment implements Environment {
 	public URL getResource(String name) {
 		URL resource = getClass().getResource("/" + getEnvironmentType().getName() + name);
 		if (resource != null) {
-			LOG.debug("Loading resource {} from environment {}", name, getEnvironmentType().getName());
+			logger.debug("Loading resource {} from environment {}", name, getEnvironmentType().getName());
 			return resource;
 		}
 
